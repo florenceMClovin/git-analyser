@@ -4,7 +4,9 @@
   "description": "scrape stuff from github",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sc_users": "node index.js",
+    "sc_languages": "node lang.js"
   },
   "author": "sksum",
   "license": "MIT",

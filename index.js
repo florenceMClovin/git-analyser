@@ -8,9 +8,18 @@ console.log("Reading search queries 🔍")
 try {
   var text = fs.readFileSync("./companies.txt").toString('utf-8');
   queries = text.split("\n");
-  queries = queries.map(item => item.trim().split(/\s+/))
+  queries = queries.map(q => 
+    q.trim()
+    .split(/\s+/)
+    .filter(
+      q_alt => q_alt.length > 0
+    )
+  ).filter(
+    q => (q.length > 0)
+  )
+
 } catch(e) {
-  console.log("Error: ",e)
+  console.log("Err ❌ ",e)
 }
 console.log(queries)
 
@@ -52,7 +61,7 @@ let searchAllQueries = async (queries) => {
       users = users.concat(new_users)
     }
     users = [...new Set(users)];
-    console.log(`Found ${users.length} 👱🏾‍♂️ at ${q[0]}`);
+    console.log(`Found ${users.length} 🥸 at ${q[0]}`);
     fs.writeFileSync(`./users/${q[0]}.txt`, users.join("\n")) 
   }
 }   
