@@ -3,13 +3,16 @@ const fs = require("fs");
 const { get } = require("http");
 const octokit = new Octokit();
 let queries = ""
-console.log("Reading earch queries 🔍")
+console.log("Reading search queries 🔍")
+
 try {
   var text = fs.readFileSync("./companies.txt").toString('utf-8');
   queries = text.split("\n");
+  queries = queries.map(item => item.trim().split(/\s+/))
 } catch(e) {
   console.log("Error: ",e)
 }
+console.log(queries)
 
 let getUserNames = (items) => {
   let usernames = items.map(item => item.login)
@@ -29,24 +32,29 @@ let getAllUsers = async (q) => {
   let users = []
   per_page = 100
   page = 1 
-  let {items, cnt} = await getUsers(q, page, per_page);
-  users = users.concat(getUserNames(items))
-  total_pages = Math.ceil(cnt/per_page);
-  console.log(page);
-  while (page < total_pages) {
-    page += 1
-    console.log(page);
+  cur = 100
+  while (cur == per_page) {
     let {items,cnt} = await getUsers(q, page, per_page);
-    users = users.concat(getUserNames(items))
+    usernames = getUserNames(items)
+    users = users.concat(usernames)
+    cur = usernames.length
+    page += 1
   }
   return users
 }
 
-for (let q of queries) { 
-  console.log(`Searching users 💻 at: ${q}`);
-  getAllUsers(q).then((users)=> {
-    console.log(`Found ${users.length} 👱🏾‍♂️ at ${q}`);
-    fs.writeFileSync(`./users/${q}.txt`, users.join("\n"))  
-  })
-}
+let searchAllQueries = async (queries) => {
+  for (let q of queries) { 
+    let users = []
+    for (let q_alt of q) {
+      console.log(`Searching users 💻 at: ${q_alt}`);
+      let new_users = await getAllUsers(q_alt)
+      users = users.concat(new_users)
+    }
+    users = [...new Set(users)];
+    console.log(`Found ${users.length} 👱🏾‍♂️ at ${q[0]}`);
+    fs.writeFileSync(`./users/${q[0]}.txt`, users.join("\n")) 
+  }
+}   
 
+searchAllQueries(queries)
