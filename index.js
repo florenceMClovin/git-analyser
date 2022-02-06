@@ -1,8 +1,9 @@
 const { Octokit } = require("@octokit/rest");
 const fs = require("fs");
-const { get } = require("http");
 const octokit = new Octokit();
 let queries = ""
+const per_page = 100
+
 console.log("Reading search queries 🔍")
 
 try {
@@ -39,9 +40,8 @@ let getUsers = async (q, page, per_page) => {
 
 let getAllUsers = async (q) => {
   let users = []
-  per_page = 100
   page = 1 
-  cur = 100
+  cur = per_page
   while (cur == per_page) {
     let {items,cnt} = await getUsers(q, page, per_page);
     usernames = getUserNames(items)

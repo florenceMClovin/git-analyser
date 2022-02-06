@@ -1,3 +1,2 @@
-jane+street janestreet
-
-optiver
+palantir
+janestreet jane+street
