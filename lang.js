@@ -57,3 +57,10 @@ let searchAllRepos = async (com) => {
 
 let com = 'palantir'
 searchAllRepos(com)
+
+//TODO:
+/*
+  - authenticated requests, wait for rate limit
+  - get command line company argumnent
+  - get all repos for each of the companies
+*/
