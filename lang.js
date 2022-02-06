@@ -20,7 +20,7 @@ let getRepos = async (username, page, per_page) => {
   currentDateTime = new Date();
   if (global_req_count == limit_per_minute) {
     if (latest_time + 60000 > currentDateTime.getTime()) {
-      let time_left = latest_time + 60000 - currentDateTime.getTime()
+      let time_left = latest_time + 61000 - currentDateTime.getTime()
       console.log(`Waiting for ${time_left/1000} seconds`);
       await waitforme(time_left); 
     }
@@ -90,7 +90,8 @@ searchAllRepos(com)
 
 //TODO:
 /*
-  - authenticated requests, wait for rate limit
+  - authenticated requests
+  - wait for rate limit ✅
   - get command line company argumnent
   - get all repos for each of the companies
 */
