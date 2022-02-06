@@ -17,13 +17,14 @@ function waitforme(milisec) {
  
 
 let getRepos = async (username, page, per_page) => {
+  currentDateTime = new Date();
   if (global_req_count == limit_per_minute) {
-    currentDateTime = new Date();
     if (latest_time + 60000 > currentDateTime.getTime()) {
       let time_left = latest_time + 60000 - currentDateTime.getTime()
       console.log(`Waiting for ${time_left/1000} seconds`);
       await waitforme(time_left); 
     }
+    currentDateTime = new Date();
     latest_time = currentDateTime.getTime();
     global_req_count = 0;
   }
