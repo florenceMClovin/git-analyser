@@ -2,14 +2,39 @@ const { Octokit } = require("@octokit/rest");
 const fs = require("fs");
 const octokit = new Octokit();
 const per_page = 100
+var currentDateTime = new Date();
 
+const limit_per_minute = 10;
+var global_req_count = 0;
+var latest_time = currentDateTime.getTime();
+
+
+function waitforme(milisec) {
+  return new Promise(resolve => {
+    setTimeout(() => { resolve('') }, milisec);
+  })
+}
+ 
 
 let getRepos = async (username, page, per_page) => {
+  if (global_req_count == limit_per_minute) {
+    currentDateTime = new Date();
+    if (latest_time + 60000 > currentDateTime.getTime()) {
+      let time_left = latest_time + 60000 - currentDateTime.getTime()
+      console.log(`Waiting for ${time_left/1000} seconds`);
+      await waitforme(time_left); 
+    }
+    latest_time = currentDateTime.getTime();
+    global_req_count = 0;
+  }
+
   const {data} = await octokit.rest.repos.listForUser({
     username,
     per_page,
     page
-    })
+  })
+  global_req_count ++;
+
   return {items: data,cnt: data.length}
 }
 
@@ -56,6 +81,10 @@ let searchAllRepos = async (com) => {
 
 
 let com = 'palantir'
+var args = process.argv.slice(2);
+com = args[0]
+
+
 searchAllRepos(com)
 
 //TODO:
